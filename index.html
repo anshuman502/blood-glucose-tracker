@@ -1,81 +1,123 @@
-<!DOCTYPE html><html lang="en" class="dark">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🩸 Glucose & Insulin Tracker</title>
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1784/1784899.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    .dark {
+      background-color: #1e293b;
+      color: #f1f5f9;
+    }
+    .dark input,
+    .dark select,
+    .dark textarea {
+      background-color: #334155;
+      color: #f1f5f9;
+    }
+    .animate-pulse-scale {
+      animation: pulse-scale 1s ease-in-out infinite;
+    }
+    @keyframes pulse-scale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4 transition-colors duration-500">
-  <div class="flex justify-end mb-4">
-    <button onclick="toggleDarkMode()" class="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-      🌙 Toggle Dark Mode
-    </button>
+<body class="bg-gray-100 dark:bg-gray-800 dark:text-white transition-colors duration-500">
+
+  <!-- Header with Dark Mode Toggle -->
+  <div class="flex items-center justify-between max-w-4xl mx-auto px-4 py-4">
+    <h1 class="text-3xl font-bold text-blue-700 dark:text-blue-300">🩸 Glucose & Insulin Tracker</h1>
+    <label class="flex items-center space-x-2">
+      <span>🌞</span>
+      <input type="checkbox" id="darkModeToggle" class="toggle" />
+      <span>🌙</span>
+    </label>
   </div>
-  <h1 class="text-3xl font-bold mb-4 text-center text-blue-800 dark:text-blue-400">🩸 Full Glucose & Insulin Tracker</h1>  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow-md transition duration-500">
+
+  <!-- Entry Form -->
+  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
     <label class="block mb-2 font-semibold">Glucose Level (mg/dL)</label>
-    <input type="number" id="glucoseInput" class="w-full mb-4 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" /><label class="block mb-2 font-semibold">Test Type</label>
-<select id="testTypeInput" onchange="toggleInputs()" class="w-full mb-4 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-  <option value="Fasting Glucose">Fasting Glucose</option>
-  <option value="Post Breakfast">Post Breakfast</option>
-  <option value="Pre Lunch">Pre Lunch</option>
-  <option value="Post Lunch">Post Lunch</option>
-  <option value="Pre Dinner">Pre Dinner</option>
-  <option value="Post Dinner">Post Dinner</option>
-  <option value="3 AM Test">3 AM Test</option>
-  <option value="Bedtime">Bedtime</option>
-  <option value="Random">Random Test</option>
-</select>
+    <input type="number" id="glucoseInput" class="w-full mb-4 p-2 border rounded" />
 
-<div id="timePickerDiv" class="hidden mb-4">
-  <label class="block mb-2 font-semibold">Custom Time</label>
-  <input type="time" id="timeOnlyInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-</div>
+    <label class="block mb-2 font-semibold">Test Type</label>
+    <select id="testTypeInput" onchange="toggleInputs()" class="w-full mb-4 p-2 border rounded">
+      <option value="Fasting Glucose">Fasting Glucose</option>
+      <option value="Post Breakfast">Post Breakfast</option>
+      <option value="Pre Lunch">Pre Lunch</option>
+      <option value="Post Lunch">Post Lunch</option>
+      <option value="Pre Dinner">Pre Dinner</option>
+      <option value="Post Dinner">Post Dinner</option>
+      <option value="3 AM Test">3 AM Test</option>
+      <option value="Bedtime">Bedtime</option>
+      <option value="Random">Random Test</option>
+    </select>
 
-<label class="block mb-2 font-semibold">Date</label>
-<input type="date" id="dateInput" class="w-full mb-4 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+    <div id="timePickerDiv" class="hidden mb-4">
+      <label class="block mb-2 font-semibold">Custom Time</label>
+      <input type="time" id="timeOnlyInput" class="w-full p-2 border rounded" />
+    </div>
 
-<div id="insulinInputDiv" class="mb-4">
-  <label class="block mb-2 font-semibold">Insulin Dose (Units) 💉</label>
-  <input type="number" id="insulinInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-</div>
+    <label class="block mb-2 font-semibold">Date</label>
+    <input type="date" id="dateInput" class="w-full mb-4 p-2 border rounded" />
 
-<div class="mb-4">
-  <label class="block mb-2 font-semibold">Glargine Dose (Units) 🌙</label>
-  <input type="number" id="glargineInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-</div>
+    <label class="block mb-2 font-semibold">Insulin Dose (Units)</label>
+    <input type="number" id="insulinInput" placeholder="Optional" class="w-full mb-4 p-2 border rounded" />
 
-<button onclick="addGlucose()" class="bg-blue-600 text-white py-2 px-4 rounded w-full hover:bg-blue-700 transition">Add Entry</button>
+    <label class="block mb-2 font-semibold">Glargine Dose (Units)</label>
+    <input type="number" id="glargineInput" placeholder="Optional" class="w-full mb-4 p-2 border rounded" />
 
-  </div>  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded shadow-md transition duration-500">
+    <button onclick="addGlucose()" class="bg-blue-600 text-white py-2 px-4 rounded w-full hover:bg-blue-700 transition">➕ Add Entry</button>
+  </div>
+
+  <!-- Chart & Download -->
+  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-900 p-6 rounded shadow-md">
     <canvas id="glucoseChart" class="mb-4"></canvas>
-    <button onclick="downloadReport()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Download PDF Report</button>
-  </div>  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded shadow-md transition duration-500">
-    <h2 class="text-xl font-semibold mb-4 text-purple-700 dark:text-purple-300">📋 Entries</h2>
-    <ul id="entriesList" class="space-y-2"></ul>
-  </div>  <script>
-    let glucoseData = JSON.parse(localStorage.getItem("glucoseData")) || [];
+    <button onclick="downloadReport()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">📥 Download PDF Report</button>
+  </div>
 
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  <!-- Reminder Section -->
+  <div class="max-w-2xl mx-auto mt-8 bg-white dark:bg-gray-900 p-6 rounded shadow-md">
+    <h2 class="text-xl font-semibold mb-4 text-purple-700 dark:text-purple-300">⏰ Set Custom Reminder Times</h2>
+    <div class="grid grid-cols-1 gap-4">
+      <div><label>Fasting Glucose: <input type="time" id="fastingTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>Post Breakfast: <input type="time" id="postBreakfastTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>Pre Lunch: <input type="time" id="preLunchTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>Post Lunch: <input type="time" id="postLunchTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>Pre Dinner: <input type="time" id="preDinnerTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>Post Dinner: <input type="time" id="postDinnerTime" class="border p-1 rounded w-full" /></label></div>
+      <div><label>3 AM Test: <input type="time" id="threeAmTime" class="border p-1 rounded w-full" /></label></div>
+    </div>
+    <button onclick="saveTimes()" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">💾 Save Reminder Times</button>
+  </div>
+
+  <!-- JavaScript Section -->
+  <script>
+    const glucoseData = JSON.parse(localStorage.getItem("glucoseData") || "[]");
+    let chart;
+
+    document.getElementById("darkModeToggle").addEventListener("change", () => {
+      document.documentElement.classList.toggle("dark");
+    });
+
+    function toggleInputs() {
+      const type = document.getElementById("testTypeInput").value;
+      document.getElementById("timePickerDiv").classList.toggle("hidden", type !== "Random");
     }
 
-    window.onload = () => {
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark');
-      }
-      renderChart();
-      renderEntries();
-    };
+    function showPopup(message, color) {
+      const popup = document.createElement("div");
+      popup.textContent = message;
+      popup.className = `fixed top-4 right-4 bg-${color}-600 text-white px-4 py-2 rounded shadow-lg animate-pulse-scale z-50`;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 5000);
+    }
 
     function addGlucose() {
       const level = parseFloat(document.getElementById("glucoseInput").value);
@@ -86,44 +128,44 @@
       const glargine = parseFloat(document.getElementById("glargineInput").value) || null;
 
       if (!level || !date || (type === "Random" && !time)) {
-        alert("❌ Please fill in all required fields.");
+        alert("Please fill in all required fields.");
         return;
       }
 
-      const dateTime = new Date(`${date}T${type === "Random" ? time : "08:00"}`);
-      glucoseData.push({ level, type, time: dateTime, insulin, glargine });
+      const reminderTimes = JSON.parse(localStorage.getItem("reminderTimes") || "{}");
+      const defaultTime = reminderTimes[type.toLowerCase().replace(/ /g, '')] || "08:00";
+      const dateTime = new Date(`${date}T${type === "Random" ? time : defaultTime}`);
+
+      const entry = { level, type, insulin, glargine, time: dateTime };
+      glucoseData.push(entry);
       localStorage.setItem("glucoseData", JSON.stringify(glucoseData));
       renderChart();
-      renderEntries();
 
-      if (level > 350) {
-        alert("⚠️ Warning: Blood sugar is very high! Immediate response needed.");
-      } else if (level < 70) {
-        alert("⚠️ Warning: Blood sugar is very low! Glucose treatment needed.");
-      }
+      // Alerts
+      if (level > 350) showPopup("⚠️ High Glucose! Immediate attention needed!", "red");
+      if (level < 70) showPopup("⚠️ Low Glucose! Take glucose treatment!", "yellow");
 
+      // Reset
       document.getElementById("glucoseInput").value = "";
       document.getElementById("dateInput").value = "";
       document.getElementById("timeOnlyInput").value = "";
       document.getElementById("testTypeInput").value = "Fasting Glucose";
       document.getElementById("insulinInput").value = "";
       document.getElementById("glargineInput").value = "";
+      toggleInputs();
     }
 
     function renderChart() {
       const ctx = document.getElementById("glucoseChart").getContext("2d");
-      if (window.chart) window.chart.destroy();
+      if (chart) chart.destroy();
       const sorted = glucoseData.sort((a, b) => new Date(a.time) - new Date(b.time));
-      const labels = sorted.map(e => `${e.type} - ${new Date(e.time).toLocaleString()}`);
-      const data = sorted.map(e => e.level);
-
-      window.chart = new Chart(ctx, {
+      chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels,
+          labels: sorted.map(e => `${e.type} - ${new Date(e.time).toLocaleString()}`),
           datasets: [{
             label: 'Glucose Level (mg/dL)',
-            data,
+            data: sorted.map(e => e.level),
             borderColor: '#dc2626',
             backgroundColor: 'rgba(255,99,132,0.1)',
             fill: true
@@ -136,7 +178,10 @@
               callbacks: {
                 afterLabel: ctx => {
                   const entry = glucoseData[ctx.dataIndex];
-                  return `Insulin: ${entry.insulin || '-'}U | Glargine: ${entry.glargine || '-'}U`;
+                  return [
+                    entry.insulin ? `Insulin: ${entry.insulin}U` : null,
+                    entry.glargine ? `Glargine: ${entry.glargine}U` : null
+                  ].filter(Boolean).join("\n");
                 }
               }
             }
@@ -145,41 +190,43 @@
       });
     }
 
-    function renderEntries() {
-      const list = document.getElementById("entriesList");
-      list.innerHTML = "";
-      glucoseData.forEach((entry, index) => {
-        const li = document.createElement("li");
-        li.className = "bg-gray-100 dark:bg-gray-700 p-2 rounded flex justify-between items-center";
-        li.innerHTML = `<span>🩸 ${entry.type} | ${new Date(entry.time).toLocaleString()} | Glucose: ${entry.level} | Insulin: ${entry.insulin || '-'}U | Glargine: ${entry.glargine || '-'}U</span>
-        <button onclick="deleteEntry(${index})" class="text-red-600 hover:text-red-800">🗑️</button>`;
-        list.appendChild(li);
-      });
-    }
-
-    function deleteEntry(index) {
-      if (confirm("Are you sure you want to delete this entry?")) {
-        glucoseData.splice(index, 1);
-        localStorage.setItem("glucoseData", JSON.stringify(glucoseData));
-        renderChart();
-        renderEntries();
-      }
-    }
-
     function downloadReport() {
+      if (!glucoseData.length) return alert("No data to export.");
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const headers = ["Date", "Type", "Glucose", "Insulin", "Glargine"];
+      const headers = ["DATE", "TEST TYPE", "GLUCOSE", "INSULIN", "GLARGINE"];
       const rows = glucoseData.map(e => [
-        new Date(e.time).toLocaleString(),
+        new Date(e.time).toLocaleDateString(),
         e.type,
         e.level,
         e.insulin ?? "",
         e.glargine ?? ""
       ]);
-      doc.text("🩸 Glucose & Insulin Report", 14, 16);
+      doc.text("Glucose & Insulin Report", 14, 16);
       doc.autoTable({ head: [headers], body: rows, startY: 20 });
       doc.save("glucose_insulin_report.pdf");
     }
-  </script></body>
+
+    function saveTimes() {
+      const reminderTimes = {
+        fastingglucose: document.getElementById("fastingTime").value,
+        postbreakfast: document.getElementById("postBreakfastTime").value,
+        prelunch: document.getElementById("preLunchTime").value,
+        postlunch: document.getElementById("postLunchTime").value,
+        predinner: document.getElementById("preDinnerTime").value,
+        postdinner: document.getElementById("postDinnerTime").value,
+        "3amtest": document.getElementById("threeAmTime").value
+      };
+      localStorage.setItem("reminderTimes", JSON.stringify(reminderTimes));
+      showPopup("Reminder times saved!", "blue");
+    }
+
+    // Start chart on load
+    renderChart();
+  </script>
+</body>
 </html>
+
+
+
+

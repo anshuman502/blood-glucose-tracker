@@ -289,15 +289,30 @@
     });
   }
 
-  function deleteEntry(index) {
-    if (confirm("🗑️ Are you sure you want to delete this entry?")) {
-      glucoseData.splice(index, 1);
-      saveGlucoseData();
-      renderChart();
-      renderTable();
-    }
-  }
+function renderEntries() {
+  const listContainer = document.getElementById("entryList");
+  listContainer.innerHTML = "";
 
+  glucoseData.forEach((entry, index) => {
+    const item = document.createElement("div");
+    item.className = "flex justify-between items-center p-2 mb-2 bg-gray-100 dark:bg-gray-800 rounded shadow";
+
+    const text = document.createElement("div");
+    text.innerHTML = `
+      <div><strong>${entry.type}</strong> on ${new Date(entry.time).toLocaleString()}</div>
+      <div>Glucose: ${entry.level} mg/dL | Insulin: ${entry.insulin ?? "-"}U | Glargine: ${entry.glargine ?? "-"}U</div>
+    `;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "🗑 Delete";
+    delBtn.className = "ml-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded transition";
+    delBtn.onclick = () => deleteEntry(index);
+
+    item.appendChild(text);
+    item.appendChild(delBtn);
+    listContainer.appendChild(item);
+  });
+}
   function showAlert(message, type) {
     const alertBox = document.createElement("div");
     alertBox.textContent = message;

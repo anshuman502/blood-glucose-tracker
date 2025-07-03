@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -9,6 +10,20 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            pulseSlow: 'pulse 3s infinite',
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     .dark {
       background-color: #1e293b;
@@ -34,11 +49,8 @@
   <!-- Header with Dark Mode Toggle -->
   <div class="flex items-center justify-between max-w-4xl mx-auto px-4 py-4">
     <h1 class="text-3xl font-bold text-blue-700 dark:text-blue-300">🩸 Glucose & Insulin Tracker</h1>
-    <label class="flex items-center space-x-2">
-      <span>🌞</span>
-      <input type="checkbox" id="darkModeToggle" class="toggle" />
-      <span>🌙</span>
-    </label>
+    <button onclick="toggleDark()" class="ml-4 bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition">🌗</button>
+
   </div>
 
   <!-- Entry Form -->
@@ -153,6 +165,9 @@
       document.getElementById("insulinInput").value = "";
       document.getElementById("glargineInput").value = "";
       toggleInputs();
+    }
+     function toggleDark() {
+      document.documentElement.classList.toggle("dark");
     }
 
     function renderChart() {

@@ -204,7 +204,35 @@
     document.getElementById("glargineInput").value = "";
     toggleInputs();
   }
+  function downloadReport() {
+  if (!glucoseData.length) {
+    alert("❌ No data to export.");
+    return;
+  }
 
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const headers = ["DATE", "TEST TYPE", "GLUCOSE", "INSULIN", "GLARGINE INSULIN"];
+  const rows = glucoseData.map(entry => [
+    new Date(entry.time).toLocaleDateString(),
+    entry.type,
+    entry.level,
+    entry.insulin ?? "",
+    entry.glargine ?? ""
+  ]);
+
+  doc.text("Glucose & Insulin Report", 14, 16);
+  doc.autoTable({ head: [headers], body: rows, startY: 20 });
+  doc.save("glucose_insulin_report.pdf");
+
+  alert("✅ Report downloaded successfully!");
+
+  // Clear localStorage data and refresh chart
+  localStorage.removeItem("glucoseData");
+  glucoseData = [];
+  renderChart();
+}
   function renderChart() {
     const ctx = document.getElementById("glucoseChart").getContext("2d");
     if (window.chart) window.chart.destroy();

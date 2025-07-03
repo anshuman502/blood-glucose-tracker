@@ -169,7 +169,14 @@
      function toggleDark() {
       document.documentElement.classList.toggle("dark");
     }
-
+    function deleteEntry(index){
+      if(confirm("are you sure you want to delete this entry?")){
+        glucoseData.splice(index, 1);
+        localStorage.setItem(glucoseData", JSON.stringfy(glucoseData));
+        renderChart();
+        renderTable();
+      }
+    }
     function renderChart() {
       const ctx = document.getElementById("glucoseChart").getContext("2d");
       if (chart) chart.destroy();

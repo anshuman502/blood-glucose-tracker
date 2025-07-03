@@ -9,6 +9,20 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            pulseSlow: 'pulse 3s infinite',
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     .alert-popup {
       animation: bounceIn 0.6s ease forwards;
@@ -24,9 +38,7 @@
 
   <!-- Dark Mode Toggle -->
   <div class="flex justify-end mb-4">
-    <button id="darkModeToggle" class="bg-gray-800 text-white dark:bg-yellow-300 dark:text-black px-4 py-2 rounded shadow hover:scale-105 transition">
-      🌙 Toggle Dark Mode
-    </button>
+    <button onclick="toggleDark()" class="ml-4 bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition">🌗</button>
   </div>
 
   <!-- Title -->
@@ -214,6 +226,8 @@
         localStorage.setItem(type, time);
       });
     }
+        function toggleDark() {
+      document.documentElement.classList.toggle("dark");
 
     document.getElementById("darkModeToggle").addEventListener("click", () => {
       document.documentElement.classList.toggle("dark");

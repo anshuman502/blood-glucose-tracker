@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glucose & Insulin Tracker</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🩸</text></svg>">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            pulseSlow: 'pulse 3s infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js & jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 transition duration-500">
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-3xl font-bold text-center text-blue-700 dark:text-blue-400 w-full animate-pulseSlow">🩸 Glucose & Insulin Tracker</h1>
+    <button onclick="toggleDark()" class="ml-4 bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition">🌗</button>
+  </div>
+
+  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow-md space-y-4 transition">
+    <label class="block font-semibold">🔢 Glucose Level (mg/dL)</label>
+    <input type="number" id="glucoseInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"/>
+
+    <label class="block font-semibold">🧪 Test Type</label>
+    <select id="testTypeInput" onchange="toggleInputs()" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600">
+      <option value="Fasting Glucose">🌅 Fasting Glucose</option>
+      <option value="Post Breakfast">🍳 Post Breakfast</option>
+      <option value="Pre Lunch">🥗 Pre Lunch</option>
+      <option value="Post Lunch">🍽️ Post Lunch</option>
+      <option value="Pre Dinner">🌆 Pre Dinner</option>
+      <option value="Post Dinner">🌙 Post Dinner</option>
+      <option value="3 AM Test">⏰ 3 AM Test</option>
+      <option value="Bedtime">🛏️ Bedtime</option>
+      <option value="Random">🎲 Random Test</option>
+    </select>
+
+    <div id="timePickerDiv" class="hidden">
+      <label class="block font-semibold">⏰ Custom Time</label>
+      <input type="time" id="timeOnlyInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"/>
+    </div>
+
+    <label class="block font-semibold">📅 Date</label>
+    <input type="date" id="dateInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"/>
+
+    <div id="insulinInputDiv" class="hidden">
+      <label class="block font-semibold">💉 Insulin Dose (Units)</label>
+      <input type="number" id="insulinInput" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"/>
+    </div>
+
+    <button onclick="addGlucose()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full transition">➕ Add Entry</button>
+  </div>
+
+  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+    <canvas id="glucoseChart" class="mb-4"></canvas>
+    <button onclick="downloadReport()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">⬇️ Download PDF Report</button>
+  </div>
+
+  <div class="max-w-2xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded shadow-md">
+    <h2 class="text-xl font-semibold mb-4 text-purple-700 dark:text-purple-400">⏰ Set Custom Reminder Times</h2>
+    <div class="grid grid-cols-1 gap-4">
+      <div><label>🌅 Fasting: <input type="time" id="fastingTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>🍳 Post Breakfast: <input type="time" id="postBreakfastTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>🥗 Pre Lunch: <input type="time" id="preLunchTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>🍽️ Post Lunch: <input type="time" id="postLunchTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>🌆 Pre Dinner: <input type="time" id="preDinnerTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>🌙 Post Dinner: <input type="time" id="postDinnerTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+      <div><label>⏰ 3 AM Test: <input type="time" id="threeAmTime" class="border p-1 rounded w-full dark:bg-gray-700 dark:border-gray-600"/></label></div>
+    </div>
+    <button onclick="saveTimes()" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition">💾 Save Reminder Times</button>
+  </div>
+
+  <script>
+    let glucoseData = JSON.parse(localStorage.getItem("glucoseData")) || [];
+    let lastDownloadReminder = localStorage.getItem("lastDownloadReminder") || null;
+
+    function toggleInputs() {
+      const type = document.getElementById("testTypeInput").value;
+      document.getElementById("timePickerDiv").classList.toggle("hidden", type !== "Random");
+      const insulinTests = ["Post Breakfast", "Post Lunch", "Post Dinner", "Bedtime"];
+      document.getElementById("insulinInputDiv").classList.toggle("hidden", !insulinTests.includes(type));
+    }
+
+    function addGlucose() {
+      const level = document.getElementById("glucoseInput").value;
+      const date = document.getElementById("dateInput").value;
+      const type = document.getElementById("testTypeInput").value;
+      const time = document.getElementById("timeOnlyInput").value;
+      const insulin = document.getElementById("insulinInput").value;
+
+      if (!level || !date || (type === "Random" && !time)) return alert("⚠️ Please fill in all fields.");
+
+      const reminderTimes = JSON.parse(localStorage.getItem("reminderTimes")) || {};
+      const defaultTime = reminderTimes[type.toLowerCase().replace(/ /g, '')] || "08:00";
+      const dateTime = new Date(`${date}T${type === "Random" ? time : defaultTime}`);
+
+      glucoseData.push({
+        level: parseFloat(level),
+        type,
+        insulin: insulin ? parseFloat(insulin) : null,
+        time: dateTime
+      });
+      localStorage.setItem("glucoseData", JSON.stringify(glucoseData));
+      renderChart();
+      alert("✅ Entry added!");
+
+      document.getElementById("glucoseInput").value = "";
+      document.getElementById("dateInput").value = "";
+      document.getElementById("timeOnlyInput").value = "";
+      document.getElementById("testTypeInput").value = "Fasting Glucose";
+      document.getElementById("insulinInput").value = "";
+      toggleInputs();
+    }
+
+    function renderChart() {
+      const ctx = document.getElementById("glucoseChart").getContext("2d");
+      if (window.chart) window.chart.destroy();
+      const sorted = glucoseData.sort((a, b) => new Date(a.time) - new Date(b.time));
+      const labels = sorted.map(e => `${e.type} - ${new Date(e.time).toLocaleString()}`);
+      const data = sorted.map(e => e.level);
+
+      window.chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: '🩸 Glucose Level (mg/dL)',
+            data,
+            borderColor: '#dc2626',
+            backgroundColor: 'rgba(255,99,132,0.1)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                afterLabel: ctx => glucoseData[ctx.dataIndex].insulin ? `💉 Insulin: ${glucoseData[ctx.dataIndex].insulin}U` : ''
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function downloadReport() {
+      if (!glucoseData.length) return alert("❌ No data to export.");
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const headers = ["DATE", "TEST TYPE", "GLUCOSE", "INSULIN"];
+      const rows = glucoseData.map(entry => [
+        new Date(entry.time).toLocaleDateString(),
+        entry.type,
+        entry.level,
+        entry.insulin ?? ''
+      ]);
+      doc.text("📊 Glucose & Insulin Report", 14, 16);
+      doc.autoTable({ head: [headers], body: rows, startY: 20 });
+      doc.save("glucose_insulin_report.pdf");
+      alert("📥 Report downloaded successfully!");
+      localStorage.setItem("lastDownloadReminder", new Date().toISOString());
+    }
+
+    function saveTimes() {
+      const reminderTimes = {
+        fastingglucose: document.getElementById("fastingTime").value,
+        postbreakfast: document.getElementById("postBreakfastTime").value,
+        prelunch: document.getElementById("preLunchTime").value,
+        postlunch: document.getElementById("postLunchTime").value,
+        predinner: document.getElementById("preDinnerTime").value,
+        postdinner: document.getElementById("postDinnerTime").value,
+        "3amtest": document.getElementById("threeAmTime").value
+      };
+      localStorage.setItem("reminderTimes", JSON.stringify(reminderTimes));
+      alert("🔔 Reminder times saved!");
+    }
+
+    function checkWeeklyReminder() {
+      if (!glucoseData.length) return;
+      const last = new Date(lastDownloadReminder || 0);
+      const now = new Date();
+      const days = (now - last) / (1000 * 60 * 60 * 24);
+      if (days >= 7) {
+        alert("📅 Reminder: Download your glucose report.");
+        localStorage.setItem("lastDownloadReminder", new Date().toISOString());
+      }
+    }
+
+    function notify(msg) {
+      if (Notification.permission === "granted") {
+        new Notification(msg);
+      }
+    }
+
+    function checkReminders() {
+      if (Notification.permission !== "granted") return;
+      const times = JSON.parse(localStorage.getItem("reminderTimes")) || {};
+      const now = new Date();
+      const nowStr = now.toTimeString().slice(0, 5);
+      const reminderLabels = {
+        fastingglucose: "Fasting Glucose",
+        postbreakfast: "Post Breakfast",
+        prelunch: "Pre Lunch",
+        postlunch: "Post Lunch",
+        predinner: "Pre Dinner",
+        postdinner: "Post Dinner",
+        "3amtest": "3 AM Test"
+      };
+      for (const key in reminderLabels) {
+        if (times[key] === nowStr) {
+          notify(`🔔 Time to test your ${reminderLabels[key]}!`);
+        }
+      }
+    }
+
+    function toggleDark() {
+      document.documentElement.classList.toggle("dark");
+    }
+
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          setInterval(checkReminders, 60000);
+        }
+      });
+    }
+
+    renderChart();
+    checkWeeklyReminder();
+  </script>
+</body>
+</html>

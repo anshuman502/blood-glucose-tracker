@@ -26,6 +26,45 @@
     }
   </style>
 </head>
+  <!-- Navbar -->
+<nav class="bg-white dark:bg-gray-900 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between h-16 items-center">
+      <!-- Logo/Brand -->
+      <div class="flex-shrink-0 text-2xl font-bold text-red-600 dark:text-red-400 animate-pulse">
+        🩸 GlucoTrack
+      </div>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex space-x-6">
+        <a href="#" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
+        <a href="#chart" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
+        <a href="#reminders" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
+        <a href="#report" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Report</a>
+      </div>
+
+      <!-- Dark mode toggle -->
+      <button id="darkModeToggle" class="ml-4 text-gray-600 dark:text-gray-300 hover:text-red-500 transition text-xl">
+        🌓
+      </button>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-700 dark:text-gray-200 text-2xl focus:outline-none">
+          ☰
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-2">
+    <a href="#" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
+    <a href="#chart" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
+    <a href="#reminders" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
+    <a href="#report" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Report</a>
+  </div>
+</nav>
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-500 p-4">
 
   <!-- Dark Mode Toggle -->
@@ -322,6 +361,12 @@
       }
     });
   }
+
+  // Mobile menu toggle
+  document.getElementById("mobile-menu-button").addEventListener("click", () => {
+    const menu = document.getElementById("mobile-menu");
+    menu.classList.toggle("hidden");
+  });
 
   // On page load
   document.addEventListener("DOMContentLoaded", () => {

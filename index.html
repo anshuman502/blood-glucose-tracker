@@ -16,6 +16,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <style>
+    *{
+      font-family: poppins,"sansrif";
+    }
     .alert-popup {
       animation: bounceIn 0.6s ease forwards;
     }
@@ -27,7 +30,7 @@
   </style>
 </head>
   <!-- Navbar -->
-<nav class="bg-white dark:bg-gray-900 shadow-lg">
+<nav class="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 transition-all duration-300">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex justify-between h-16 items-center">
       <!-- Logo/Brand -->
@@ -40,7 +43,7 @@
         <a href="#" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
         <a href="#chart" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
         <a href="#reminders" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
-        <a href="#report" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Report</a>
+        <a href="#report" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Glucose</a>
       </div>
 
       <!-- Dark mode toggle -->
@@ -78,7 +81,7 @@
   <h1 class="text-3xl font-bold text-center mb-6 text-blue-700 dark:text-blue-300">🩸 Glucose & Insulin Tracker</h1>
 
   <!-- Input Form -->
-  <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-4">
+  <div id="home" class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-4">
     <label>Glucose Level (mg/dL)</label>
     <input type="number" id="glucoseInput" class="w-full p-2 border rounded dark:bg-gray-700"/>
 
@@ -117,13 +120,13 @@
   </div>
 
   <!-- Chart Section -->
-  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+  <div id="Chart" class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
     <canvas id="glucoseChart" class="mb-4"></canvas>
     <button onclick="downloadReport()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:scale-105 transition">📄 Download PDF Report</button>
   </div>
 
   <!-- Reminder Settings -->
-  <div class="max-w-2xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+  <div id="Reminders" class="max-w-2xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
     <h2 class="text-xl font-semibold text-purple-600 dark:text-purple-300 mb-4">⏰ Set Custom Reminder Times</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Each input is labeled with ID matching testType formatting -->

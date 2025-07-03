@@ -42,8 +42,8 @@
       <div class="hidden md:flex space-x-6">
         <a href="#home" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
         <a href="#chart" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
-        <a href="#reminders" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
-        <a href="#report" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Glucose</a>
+        <a href="#Reminders" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
+        <a href="#report" class="text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Entries</a>
       </div>
 
       <!-- Dark mode toggle -->
@@ -62,10 +62,10 @@
 
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-2">
-    <a href="#" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
-    <a href="#chart" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
-    <a href="#reminders" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
-    <a href="#report" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Report</a>
+    <a href="#home" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Home</a>
+    <a href="#Chart" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Chart</a>
+    <a href="#Reminders" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Reminders</a>
+    <a href="#report" class="block text-gray-700 dark:text-gray-200 hover:text-red-500 transition">Entries</a>
   </div>
 </nav>
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-500 p-4">
@@ -145,7 +145,7 @@
   <audio id="alertSound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
 
   <!-- Entries Table -->
-  <div class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+  <div id="report" class="max-w-4xl mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
     <h2 class="text-xl font-bold text-red-600 dark:text-red-300 mb-4">📝 All Entries</h2>
     <ul id="entryList" class="space-y-2"></ul>
   </div>

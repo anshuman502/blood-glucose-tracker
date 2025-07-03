@@ -5,23 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🩸 Glucose & Insulin Tracker</title>
   <link rel="icon" href="https://emojiapi.dev/api/v1/drop-of-blood/64.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          animation: {
-            pulseSlow: 'pulse 3s infinite',
-          }
-        }
-      }
-    }
-  </script>
-
   <style>
     .alert-popup {
       animation: bounceIn 0.6s ease forwards;
@@ -36,8 +23,11 @@
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-500 p-4">
 
   <!-- Dark Mode Toggle -->
-
-    <button onclick="toggleDark()" class="ml-4 bg-gray-200 dark:bg-gray-800 px-3 py-1 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition">🌗</button>
+  <div class="flex justify-end mb-4">
+    <button id="darkModeToggle" class="bg-gray-800 text-white dark:bg-yellow-300 dark:text-black px-4 py-2 rounded shadow hover:scale-105 transition">
+      🌙 Toggle Dark Mode
+    </button>
+  </div>
 
   <!-- Title -->
   <h1 class="text-3xl font-bold text-center mb-6 text-blue-700 dark:text-blue-300">🩸 Glucose & Insulin Tracker</h1>
@@ -224,10 +214,10 @@
         localStorage.setItem(type, time);
       });
     }
-        function toggleDark() {
-      document.documentElement.classList.toggle("dark");
 
-    
+    document.getElementById("darkModeToggle").addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+    });
   </script>
 </body>
 </html>

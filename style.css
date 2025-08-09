@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
 * {
     box-sizing: border-box;
+    font-family: "Sour Gummy", sans-serif;
 }
 
 body {
@@ -44,6 +46,19 @@ select {
     background-color: #ffffff;
     color: #1a202c;
     border: 1px solid #ccc;
+}
+
+.entryList {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 1em;
+    row-gap: 1em;
+}
+
+.entry {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgb(219, 218, 218);
 }
 
 .dark input,
@@ -127,4 +142,40 @@ button:active {
 
 .hidden {
     display: none;
+}
+
+.input_tag {
+    border-radius: 40px;
+    padding: 10px;
+    height: 3em;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+.entry_btn {
+    background: #f54343;
+    padding: 15px 30px;
+    border-radius: 30px;
+    margin-left: 0.5em;
+}
+
+.down_btn {
+    background: #78C841;
+    padding: 15px 30px;
+    border-radius: 30px;
+    margin-right: 0.5em;
+}
+
+.entry_btn:hover {
+    transform: scale(1.2);
+    background: #f35151;
+}
+
+.down_btn:hover {
+    transform: scale(1.2);
+    background: #7fc550;
+}
+
+.input_tag:hover {
+    transform: scale(1.1);
 }

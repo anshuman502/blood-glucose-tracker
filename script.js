@@ -1,12 +1,13 @@
 let glucoseData = JSON.parse(localStorage.getItem("glucoseData")) || [];
 let chart;
+
 const testTimes = {
-    "Fasting Glucose": "06:00",
-    "Post-breakfast": "09:00",
-    "Pre-lunch": "12:00",
-    "Post-lunch": "14:30",
-    "Pre-dinner": "19:00",
-    "Post-dinner": "21:30",
+    "Fasting Glucose": "",
+    "Post-breakfast": "",
+    "Pre-lunch": "",
+    "Post-lunch": "",
+    "Pre-dinner": "",
+    "Post-dinner": "",
     "Random": ""
 };
 
@@ -24,23 +25,30 @@ function addGlucose() {
     const insulin = parseFloat(document.getElementById("insulinInput").value) || 0;
     const glargine = parseFloat(document.getElementById("glargineInput").value) || 0;
 
-    let time;
-    if (testType === "Random") {
-        time = document.getElementById("timeOnlyInput").value;
-        if (!time) {
-            alert("Please select a time for random test.");
-            return;
-        }
-    } else {
-        time = testTimes[testType];
+    const hour = document.getElementById("hourSelect").value;
+    const minute = document.getElementById("minuteSelect").value;
+    const ampm = document.getElementById("ampmSelect").value;
+
+    if (!hour || !minute || !ampm) {
+        alert("Please select full time (hour, minute, AM/PM).");
+        return;
     }
+
+    // Convert to 24-hour format
+    let hr = parseInt(hour);
+    if (ampm === "PM" && hr !== 12) {
+        hr += 12;
+    } else if (ampm === "AM" && hr === 12) {
+        hr = 0;
+    }
+    const time = `${String(hr).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 
     if (!glucose || !date) {
         alert("Please enter valid glucose and date.");
         return;
     }
 
-    const timestamp = `${date} ${time}`;
+    const timestamp = `${date} ${time} ${ampm}`;
     const entry = { glucose, timestamp, testType, insulin, glargine };
     glucoseData.push(entry);
     localStorage.setItem("glucoseData", JSON.stringify(glucoseData));
@@ -49,6 +57,7 @@ function addGlucose() {
     updateChart();
     clearInputs();
 }
+
 
 function updateList() {
     const list = document.getElementById("entryList");
@@ -68,6 +77,7 @@ function updateList() {
       <strong>${entry.timestamp}</strong> – ${entry.testType}<br/>
       Glucose: <strong>${entry.glucose} mg/dL</strong><br/>
       Insulin: ${entry.insulin || 0} u, Glargine: ${entry.glargine || 0} u
+      <span class="material-symbols-outlined" onclick"></span>
     `;
         list.appendChild(item);
     });
@@ -120,15 +130,7 @@ function clearInputs() {
     document.getElementById("timePickerDiv").classList.add("hidden");
 }
 
-function toggleInputs() {
-    const type = document.getElementById("testTypeInput").value;
-    const timeDiv = document.getElementById("timePickerDiv");
-    if (type === "Random") {
-        timeDiv.classList.remove("hidden");
-    } else {
-        timeDiv.classList.add("hidden");
-    }
-}
+
 
 async function downloadReport() {
     if (glucoseData.length === 0) {
